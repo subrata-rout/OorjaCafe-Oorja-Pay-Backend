@@ -4,6 +4,7 @@ package com.oorjacafe.oorjapay.service;
 import com.oorjacafe.oorjapay.dto.UserDTO;
 import com.oorjacafe.oorjapay.dto.UserResponseDTO;
 import com.oorjacafe.oorjapay.entity.User;
+import com.oorjacafe.oorjapay.exception.UserNotFoundException;
 import com.oorjacafe.oorjapay.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -68,7 +69,7 @@ public class UserService {
     //return responseDTO
     public UserResponseDTO getUserById(Long id){
         User user=userRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("User not found"));
+                .orElseThrow(()-> new UserNotFoundException("User not found"));
         return mapToResponse(user);
     }
 
@@ -76,7 +77,7 @@ public class UserService {
     //return ResponseDTO
     public UserResponseDTO updateUser(Long id, UserDTO userDTO){
         User existingUser= userRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("User not found"));
+                .orElseThrow(()-> new UserNotFoundException("User not found"));
 
         existingUser.setName(userDTO.getName());
         existingUser.setEmail(userDTO.getEmail());
