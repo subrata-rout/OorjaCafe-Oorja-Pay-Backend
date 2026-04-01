@@ -1,8 +1,10 @@
 package com.oorjacafe.oorjapay.controller;
 
 
+import com.oorjacafe.oorjapay.dto.UserDTO;
 import com.oorjacafe.oorjapay.entity.User;
 import com.oorjacafe.oorjapay.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,8 +18,8 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    public User createUser(@RequestBody User user){
-        return userService.createUser(user);
+    public User createUser( @RequestBody @Valid UserDTO userDTO){
+        return userService.createUser(userDTO);
     }
 
     @GetMapping
@@ -31,8 +33,8 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public User updateUser(@PathVariable Long id,@RequestBody User user){
-        return userService.updateUser(id, user);
+    public User updateUser(@PathVariable Long id,@RequestBody @Valid UserDTO userDTO){
+        return userService.updateUser(id, userDTO);
     }
 
     @DeleteMapping("/{id}")

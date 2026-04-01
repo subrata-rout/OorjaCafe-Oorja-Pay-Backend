@@ -1,6 +1,7 @@
 package com.oorjacafe.oorjapay.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name="users")
@@ -9,7 +10,12 @@ public class User {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
 
     private Long id;
+
+    @NotBlank(message = "Name cannot be empty")
     private String name;
+
+    @NotBlank(message = "Invalid email format")
+    @NotBlank(message = "Email cannot be empty")
     private String email;
 
     public Long getId() {
