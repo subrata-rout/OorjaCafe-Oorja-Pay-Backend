@@ -1,12 +1,13 @@
 package com.oorjacafe.oorjapay.service;
 
 
+import com.oorjacafe.oorjapay.dto.LoginDTO;
 import com.oorjacafe.oorjapay.dto.UserDTO;
 import com.oorjacafe.oorjapay.dto.UserResponseDTO;
 import com.oorjacafe.oorjapay.entity.User;
 import com.oorjacafe.oorjapay.exception.UserNotFoundException;
 import com.oorjacafe.oorjapay.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,9 +18,11 @@ public class UserService {
 //    private UserRepository userRepository;
 
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
     //constructor injection
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository , BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder=passwordEncoder;
     }
 
     //    public User createUser(User user){
@@ -48,6 +51,8 @@ public class UserService {
         User user=new User();
         user.setName(userDTO.getName());
         user.setEmail(userDTO.getEmail());
+
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
         //save to DB
         User savedUser=userRepository.save(user);
@@ -95,6 +100,17 @@ public class UserService {
 
     public void deleteUser(Long id){
         userRepository.deleteById(id);
+    }
+
+
+    //Login Method
+    public User login(LoginDTO loginDTO){
+        User user=userRepository.findByEmail(loginDTO.getEmail())
+                .orElseThrow(()->new RuntimeException("User not found"));
+        if (!passwordEncoder.matches(loginDTO.getPassword(),user.getPassword())){
+            throw new RuntimeException("Invalid password");
+        }
+        return user;
     }
 
 

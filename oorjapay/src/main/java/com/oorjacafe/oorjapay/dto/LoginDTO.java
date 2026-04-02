@@ -2,25 +2,13 @@ package com.oorjacafe.oorjapay.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
-public class UserDTO {
-    @NotBlank(message= "Name cannot be empty")
-    private String name;
-    @NotBlank(message="Invalid email format")
-    @NotBlank(message="Email cannot be empty")
+public class LoginDTO {
+    @NotBlank
     private String email;
-
-    @NotBlank(message = "password cannot be empty")
+    @NotBlank
     private String password;
 
-    //Getters & Setters
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    //Getter & Setters
 
     public String getEmail() {
         return email;
