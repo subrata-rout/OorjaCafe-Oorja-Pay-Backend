@@ -16,10 +16,15 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+//    @Autowired
+//    private UserService userService;
+    private final  UserService userService;
+    //constructor injection
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
-//    @PostMapping
+    //    @PostMapping
 //    public User createUser( @RequestBody @Valid UserDTO userDTO){
 //        return userService.createUser(userDTO);
 //    }

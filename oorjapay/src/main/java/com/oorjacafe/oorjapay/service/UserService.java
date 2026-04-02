@@ -13,10 +13,16 @@ import java.util.List;
 
 @Service
 public class UserService {
-    @Autowired
-    private UserRepository userRepository;
+//    @Autowired
+//    private UserRepository userRepository;
 
-//    public User createUser(User user){
+    private final UserRepository userRepository;
+    //constructor injection
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    //    public User createUser(User user){
 //        return userRepository.save(user);
 //    }
 //    public User createUser(UserDTO userDTO){
