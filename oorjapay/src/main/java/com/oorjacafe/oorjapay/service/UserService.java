@@ -2,6 +2,7 @@ package com.oorjacafe.oorjapay.service;
 
 
 import com.oorjacafe.oorjapay.dto.LoginDTO;
+import com.oorjacafe.oorjapay.dto.RegisterDTO;
 import com.oorjacafe.oorjapay.dto.UserDTO;
 import com.oorjacafe.oorjapay.dto.UserResponseDTO;
 import com.oorjacafe.oorjapay.entity.User;
@@ -114,4 +115,18 @@ public class UserService {
     }
 
 
+    public String register(RegisterDTO dto){
+        //if already exists
+        if(userRepository.findByEmail(dto.getEmail()).isPresent()){
+            return "User already exists";
+        }
+        User user=new User();
+        user.setName(dto.getName());
+        user.setEmail(dto.getName());
+
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        userRepository.save(user);
+        return "User registered successfully";
+
+    }
 }

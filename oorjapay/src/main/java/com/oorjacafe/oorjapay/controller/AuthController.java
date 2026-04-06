@@ -2,6 +2,7 @@ package com.oorjacafe.oorjapay.controller;
 
 
 import com.oorjacafe.oorjapay.dto.LoginDTO;
+import com.oorjacafe.oorjapay.dto.RegisterDTO;
 import com.oorjacafe.oorjapay.dto.UserResponseDTO;
 import com.oorjacafe.oorjapay.entity.User;
 import com.oorjacafe.oorjapay.response.ApiResponse;
@@ -46,6 +47,10 @@ public class AuthController {
                 "Login successful",
                 token
         );
+    }
+    @PostMapping("/register")
+    public String register(@RequestBody RegisterDTO dto){
+        return userService.register(dto);
     }
 
 }
