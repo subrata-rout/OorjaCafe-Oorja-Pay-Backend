@@ -75,4 +75,11 @@ public class UserController {
                 null
         );
     }
+
+    //Test protected API
+    @GetMapping("/test")
+    public String test() {
+        System.out.println("API HIT");
+        return "Protected API working 🔥";
+    }
 }

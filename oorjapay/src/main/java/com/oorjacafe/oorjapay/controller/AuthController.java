@@ -40,13 +40,7 @@ public class AuthController {
     @PostMapping("/login")
     public ApiResponse<String> login(@RequestBody @Valid LoginDTO loginDTO) {
 
-        User user = userService.login(loginDTO);
-        String token=jwtUtil.generateToken(user.getEmail());
-        return new ApiResponse<>(
-                true,
-                "Login successful",
-                token
-        );
+        return userService.login(loginDTO);
     }
     @PostMapping("/register")
     public String register(@RequestBody RegisterDTO dto){

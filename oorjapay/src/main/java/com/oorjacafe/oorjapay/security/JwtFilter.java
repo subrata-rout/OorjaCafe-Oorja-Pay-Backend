@@ -37,6 +37,7 @@ public class JwtFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
         String authHeader= request.getHeader("Authorization");
+        System.out.println("AUTH HEADER: " + authHeader);
 
         //check if header exists and starts with Bearer
 
@@ -48,6 +49,7 @@ public class JwtFilter extends OncePerRequestFilter {
              token =authHeader.substring(7);
              username=jwtService.extractUsername(token);
         }
+        System.out.println("AUTH HEADER: " + authHeader);
 
         //2. Validation and set authentication
 
@@ -57,8 +59,12 @@ public class JwtFilter extends OncePerRequestFilter {
                         .getAuthentication() == null) {
 
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            System.out.println("USERNAME FROM TOKEN: " + username);
 
-            if (jwtService.validateToken(token, userDetails.getUsername())) {
+           // if (jwtService.validateToken(token, userDetails.getUsername())) {
+            if(jwtService.validateToken( token,  userDetails)){
+                System.out.println("TOKEN VALID ✅");
+
 
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(
@@ -73,6 +79,10 @@ public class JwtFilter extends OncePerRequestFilter {
                 );
 
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+                System.out.println("AUTHENTICATION SET ✅");
+            } else {
+                System.out.println("TOKEN INVALID ❌");
+
             }
         }
         //3. Continue filter chain

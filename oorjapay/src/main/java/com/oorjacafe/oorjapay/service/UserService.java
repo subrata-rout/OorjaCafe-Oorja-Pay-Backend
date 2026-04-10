@@ -8,10 +8,13 @@ import com.oorjacafe.oorjapay.dto.UserResponseDTO;
 import com.oorjacafe.oorjapay.entity.User;
 import com.oorjacafe.oorjapay.exception.UserNotFoundException;
 import com.oorjacafe.oorjapay.repository.UserRepository;
+import com.oorjacafe.oorjapay.response.ApiResponse;
+import com.oorjacafe.oorjapay.security.JwtUtil;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -20,10 +23,14 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
     //constructor injection
-    public UserService(UserRepository userRepository , BCryptPasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository , BCryptPasswordEncoder passwordEncoder
+    ,JwtService jwtService
+                       ) {
         this.userRepository = userRepository;
         this.passwordEncoder=passwordEncoder;
+        this.jwtService=jwtService;
     }
 
     //    public User createUser(User user){
@@ -105,13 +112,29 @@ public class UserService {
 
 
     //Login Method
-    public User login(LoginDTO loginDTO){
-        User user=userRepository.findByEmail(loginDTO.getEmail())
-                .orElseThrow(()->new RuntimeException("User not found"));
-        if (!passwordEncoder.matches(loginDTO.getPassword(),user.getPassword())){
-            throw new RuntimeException("Invalid password");
+    public ApiResponse<String> login(LoginDTO loginDTO) {
+
+        System.out.println("LOGIN EMAIL FROM REQUEST: " + loginDTO.getEmail());
+
+        Optional<User> userOptional = userRepository.findByEmail(loginDTO.getEmail());
+
+        System.out.println("USER FOUND IN DB? " + userOptional.isPresent());
+
+        if (userOptional.isEmpty()) {
+            return new ApiResponse<>(false, "User not found", null);
         }
-        return user;
+
+        User user = userOptional.get();
+
+        System.out.println("EMAIL IN DB: " + user.getEmail());
+
+        if (!passwordEncoder.matches(loginDTO.getPassword(), user.getPassword())) {
+            return new ApiResponse<>(false, "Invalid password", null);
+        }
+
+        String token = jwtService.generateToken(user.getEmail());
+
+        return new ApiResponse<>(true, "Login successful", token);
     }
 
 
@@ -122,7 +145,7 @@ public class UserService {
         }
         User user=new User();
         user.setName(dto.getName());
-        user.setEmail(dto.getName());
+        user.setEmail(dto.getEmail());
 
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         userRepository.save(user);
